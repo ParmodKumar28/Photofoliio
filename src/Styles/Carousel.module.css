@@ -60,6 +60,12 @@
     color: white;
 }
 
+/* Right arrow */
+.rightArrow{
+    margin-top: -11px;
+    margin-right: 10px;
+}
+
 /* Close icon */
 .closeIcon {
     position: absolute;

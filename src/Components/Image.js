@@ -14,12 +14,12 @@ function Image(props){
             <div className={styles.iconContainer}>
                 <img src="https://cdn-icons-png.flaticon.com/128/9790/9790368.png" 
                     alt="Delete" className={styles.deleteIcon} 
-                    onClick={() => props.handleDeleteIcon(props.id)} 
+                    onClick={(event) => props.handleDeleteIcon(event, props.id)} 
                     />
                 <img src="https://cdn-icons-png.flaticon.com/128/5996/5996831.png" 
                     alt="Edit" 
                     className={styles.editIcon} 
-                    onClick={() => props.handleEditIcon(props.id, {title: props.title, imageUrl: props.url})}
+                    onClick={(event) => props.handleEditIcon(event, props.id, {title: props.title, imageUrl: props.url})}
                     />
             </div>
             {/* Image title setting from props */}

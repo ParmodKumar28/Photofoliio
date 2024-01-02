@@ -33,14 +33,15 @@ function Carousel({ images, handleCloseCarousel, imageIndex }) {
             <div className={styles.navigation}>
                 {/* Left arrow */}
                 <span className={styles.leftArrow} onClick={goToPreviousSlide}>
-                    <img src='https://cdn-icons-png.flaticon.com/128/2609/2609370.png' alt='Previous'/>
+                    <img src='https://cdn-icons-png.flaticon.com/128/8804/8804952.png' alt='Previous'/>
                 </span>
                 {/* Right Arrow */}
                 <span className={styles.rightArrow} onClick={goToNextSlide}>
-                <img src='https://cdn-icons-png.flaticon.com/128/318/318476.png' alt='Next'/>
+                <img src='https://cdn-user-icons.flaticon.com/132185/132185789/1704220679344.svg?token=exp=1704221580~hmac=eee299c4d7acb41cb940b3dfed6a632a' alt='Next'/>
                 </span>
             </div>
         </div>
+        
     );
 }
 

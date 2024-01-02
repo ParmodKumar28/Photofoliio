@@ -103,7 +103,8 @@ function ImagesList(props){
     }
 
     // Editing Image
-    const handleEditIcon = (id, data) => {
+    const handleEditIcon = (event, id, data) => {
+        event.stopPropagation();
         // Getting the data that needs to update of a image and setting state
         const updatedData = {...data, id};
         // Showing update image form after clicking edit icon by setting state
@@ -113,7 +114,8 @@ function ImagesList(props){
     }
 
     // Deleting image from firebase database function on click of delete icon
-    const handleDeleteIcon = async (id) => {
+    const handleDeleteIcon = async (event, id) => {
+        event.stopPropagation();
         const docRef = doc(db, "images", id);
         try {
             await deleteDoc(docRef);
