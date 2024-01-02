@@ -1,6 +1,6 @@
 // Imports
 import { useEffect, useRef, useState } from "react";
-import styles from "../Styles/Images-list.module.css"
+import styles from "../Styles/Images-list.module.css";
 import ImageForm from "./ImageForm";
 import Image from "./Image";
 import { collection, deleteDoc, doc, getDocs, onSnapshot } from "firebase/firestore";
@@ -10,7 +10,6 @@ import { toast } from "react-toastify";
 
 // Creating component for the ImagesList here.
 function ImagesList(props){
-
     // States
     const [imagesFormVisible, setImagesFormVisible] = useState(false);
     let [images, setImages] = useState([]);
@@ -23,22 +22,26 @@ function ImagesList(props){
 
     // Using side effect to render all images on album load and render searched images.
     useEffect(() => {
+        // fetchData() function fetches all images of the album
         const fetchData = async () => {
             const unsubscribe = onSnapshot(collection(db, "images"), async (snapShot) => {
                 const images = snapShot.docs.map((doc) => ({
                     id: doc.id,
                     ...doc.data(),
                 }));
-    
+
+                // Checking if searched images is needed
                 if (!searchQuery) {
                     const albumImages = images.filter((image) => image.albumId === props.albumId);
                     setImages(albumImages);
                     setLoading(false);
                 } else {
+                    // Finding all images of the album and setting to images state
                     try {
                         const querySnapshot = await getDocs(collection(db, 'images'));
                         const searchQueryLower = searchQuery.toLowerCase();
                         
+                        // filtering images of particular album whoose opened from all images
                         const filteredImages = querySnapshot.docs
                             .filter((doc) => {
                                 const title = doc.data().title.toLowerCase();
@@ -49,7 +52,7 @@ function ImagesList(props){
                                 id: doc.id,
                                 ...doc.data(),
                             }));
-                            
+                        // Setting images state here and stoping loading after images fetched by setting loading state.
                         setImages(filteredImages);
                         setLoading(false);
                     } catch (error) {
@@ -57,25 +60,25 @@ function ImagesList(props){
                     }
                 }
             });
-    
+
+            // Unsubscribing
             return () => unsubscribe();
         };
-    
-        fetchData();
+        fetchData(); //Calling fetchData()
     }, [props.albumId, searchQuery]);
 
-    // onClick Add Image
+    // onClick Add Image button to add new image in the album
     const handleAddImageBtn = () => {
         setImagesFormVisible(true);
     }
 
-    // onClick cancel after add Image button
+    // onClick cancel after adding Image button or updating image
     const handleCancelAddImageBtn = () => {
         setImagesFormVisible(false);
         setUpdateImage(false);
     }
 
-    // Handling search button
+    // Handling search button by setting search state
     const handleSearchBtnClick = () => {
         setSearch(true);
         setTimeout(() => {
@@ -85,26 +88,28 @@ function ImagesList(props){
         }, 100); 
     }
 
-    // Handling close search
+    // Handling close search to closing search form
     const handleCloseSearchBtn = () => {
         setSearch(false);
     }
 
-    // Function to set searchQuery o change of search input value.
+    // Function to set searchQuery value on change of the search input field value.
     const handleSearchQuery = (event) => {
         const query = event.target.value;
-        setSearchQuery(query); // Update searchQuery with input value
+        setSearchQuery(query); // Updating searchQuery with input value
     }
 
     // Editing Image
     const handleEditIcon = (id, data) => {
+        // Getting the data that needs to update of a image and setting state
         const updatedData = {...data, id};
+        // Showing update image form after clicking edit icon by setting state
         setUpdateImage(true);
         setImagesFormVisible(true);
         setUpdateImageData(updatedData);
     }
 
-    // Deleting image
+    // Deleting image from firebase database function on click of delete icon
     const handleDeleteIcon = async (id) => {
         const docRef = doc(db, "images", id);
         try {
@@ -117,14 +122,19 @@ function ImagesList(props){
         }
     };
     
-
     // Returning JSX
     return (
+        // Images list container
     <div className={styles.imagesListContainer}>
+        {/* Header shows album name and search icon and all conditionally and back button */}
         <header>
-            {/* Shwoing back to album button */}
+            {/* Showing back to album button */}
         <div className={styles.backImageContainer}>
-            <img src="https://mellow-seahorse-fc9268.netlify.app/assets/back.png" alt="back" onClick={props.handleBackToAlbumBtn} className={styles.backIcon}/> 
+            <img src="https://mellow-seahorse-fc9268.netlify.app/assets/back.png" 
+                alt="back" 
+                onClick={props.handleBackToAlbumBtn} 
+                className={styles.backIcon}
+                /> 
         </div>
 
         {/* Showing album name*/}
@@ -167,7 +177,7 @@ function ImagesList(props){
         }
         </header>
 
-        {/* Displaying form conditionally */}
+        {/* Displaying form conditionally if add of update image button click */}
         {imagesFormVisible ? 
             <ImageForm albumId={props.albumId} 
             albumName={props.albumName} 
@@ -183,13 +193,17 @@ function ImagesList(props){
         </div>
         ) : (
 
-        // Showing all images in main of the album
+        // Showing all images in the main of the album here
            <main className={styles.imagesMain}>
+            {/* Passing to image component each image and props for render */}
             {images.map((image) => (
-                <>
-                {/* Passing to image component each image for render */}
-                <Image key={image.id} id={image.id} title={image.title} url={image.imageUrl} handleDeleteIcon={handleDeleteIcon} handleEditIcon={handleEditIcon}/>
-                </>
+                <Image key={image.id} 
+                    id={image.id} 
+                    title={image.title} 
+                    url={image.imageUrl} 
+                    handleDeleteIcon={handleDeleteIcon} 
+                    handleEditIcon={handleEditIcon}
+                    />
             ))}
         </main>
     )}
