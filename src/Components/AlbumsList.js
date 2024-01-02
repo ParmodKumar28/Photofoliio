@@ -81,7 +81,7 @@ function AlbumList(){
 
             {/* Showing loading */}
             {loading ?       
-                <div>
+                <div className={styles.loaderContainer}>
                     <Spinner radius={120} color={"#333"} stroke={2} visible={true}/>
                 </div> :
             <main>

@@ -3,39 +3,66 @@ import { useEffect, useRef, useState } from "react";
 import styles from "../Styles/Images-list.module.css"
 import ImageForm from "./ImageForm";
 import Image from "./Image";
-import { collection, onSnapshot } from "firebase/firestore";
+import { collection, deleteDoc, doc, getDocs, onSnapshot } from "firebase/firestore";
 import db from "../firebaseConfig";
 import Spinner from "react-spinner-material";
+import { toast } from "react-toastify";
 
 // Creating component for the ImagesList here.
 function ImagesList(props){
-    // Using effect on mounting to get all images of the album from database.
-    useEffect(() => {
-        const fetchData = async () => {
-            const unsubscribe = onSnapshot(collection(db, "images"), (snapShot) => {
-                const images = snapShot.docs.map((doc) => ({
-                    id: doc.id,
-                    ...doc.data(),
-                }));
-    
-                const albumImages = images.filter((image) => image.albumId === props.albumId);
-                setImages(albumImages);
-                setLoading(false);
-            });
-    
-            return () => unsubscribe(); // Unsubscribe the listener when component unmounts
-        };
-    
-        fetchData();
-    }, [props.albumId]);        
 
     // States
     const [imagesFormVisible, setImagesFormVisible] = useState(false);
     let [images, setImages] = useState([]);
     let [loading, setLoading] = useState(true);
     let [search, setSearch] = useState(false);
-    let [searchQuery, setSerachQuery] = useState("");
+    let [searchQuery, setSearchQuery] = useState("");
+    let [updateImage, setUpdateImage] = useState(false);
+    let [updateImageData, setUpdateImageData] = useState({});
     const searchInputRef = useRef(null);
+
+    // Using side effect to render all images on album load and render searched images.
+    useEffect(() => {
+        const fetchData = async () => {
+            const unsubscribe = onSnapshot(collection(db, "images"), async (snapShot) => {
+                const images = snapShot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                }));
+    
+                if (!searchQuery) {
+                    const albumImages = images.filter((image) => image.albumId === props.albumId);
+                    setImages(albumImages);
+                    setLoading(false);
+                } else {
+                    try {
+                        const querySnapshot = await getDocs(collection(db, 'images'));
+                        const searchQueryLower = searchQuery.toLowerCase();
+                        
+                        const filteredImages = querySnapshot.docs
+                            .filter((doc) => {
+                                const title = doc.data().title.toLowerCase();
+                                const albumId = doc.data().albumId;
+                                return title.includes(searchQueryLower) && albumId === props.albumId;
+                            })
+                            .map((doc) => ({
+                                id: doc.id,
+                                ...doc.data(),
+                            }));
+                            
+                        setImages(filteredImages);
+                        setLoading(false);
+                    } catch (error) {
+                        console.error("Error fetching documents: ", error);
+                    }
+                }
+            });
+    
+            return () => unsubscribe();
+        };
+    
+        fetchData();
+    }, [props.albumId, searchQuery]);
 
     // onClick Add Image
     const handleAddImageBtn = () => {
@@ -45,6 +72,7 @@ function ImagesList(props){
     // onClick cancel after add Image button
     const handleCancelAddImageBtn = () => {
         setImagesFormVisible(false);
+        setUpdateImage(false);
     }
 
     // Handling search button
@@ -63,11 +91,32 @@ function ImagesList(props){
     }
 
     // Function to set searchQuery o change of search input value.
-    const handleSearchQuery = () => {
-        setSerachQuery(searchInputRef.current.value);
-        // Reseting the serach input value
-        searchInputRef.current.value = "";
+    const handleSearchQuery = (event) => {
+        const query = event.target.value;
+        setSearchQuery(query); // Update searchQuery with input value
     }
+
+    // Editing Image
+    const handleEditIcon = (id, data) => {
+        const updatedData = {...data, id};
+        setUpdateImage(true);
+        setImagesFormVisible(true);
+        setUpdateImageData(updatedData);
+    }
+
+    // Deleting image
+    const handleDeleteIcon = async (id) => {
+        const docRef = doc(db, "images", id);
+        try {
+            await deleteDoc(docRef);
+            toast.success("Image removed successfully");
+        } catch (error) {
+            console.error("Error deleting image: ", error);
+            // Optionally, show an error notification if the deletion fails
+            toast.error("Failed to remove image");
+        }
+    };
+    
 
     // Returning JSX
     return (
@@ -79,17 +128,21 @@ function ImagesList(props){
         </div>
 
         {/* Showing album name*/}
-        <h1>{images.length > 0 ? `Images in ${props.albumName}` : `No images found in the album.`}</h1>
+        <h1>{images.length > 0 ? 
+                    `Images in ${props.albumName}` : images.length === 0 && search ? 
+                    "No images found on your search" : `No images found in the album.`
+                    }
+        </h1>
 
         {/* Showing search icon */}
-        {images.length > 0 ?
+        {images.length || search > 0 ?
         (
             search ? (
             <div className={styles.searchContainer}>
             <input type="search" className={styles.searchInput} 
                 placeholder="Search"
                 ref={searchInputRef} 
-                onChange={handleSearchQuery}
+                onChange={(event) => handleSearchQuery(event)}
                 value={searchQuery}
                 />
             <img src="https://cdn-icons-png.flaticon.com/128/13692/13692659.png"
@@ -115,12 +168,17 @@ function ImagesList(props){
         </header>
 
         {/* Displaying form conditionally */}
-        {imagesFormVisible ? <ImageForm albumId={props.albumId} albumName={props.albumName}/> : null}
+        {imagesFormVisible ? 
+            <ImageForm albumId={props.albumId} 
+            albumName={props.albumName} 
+            updateImg={updateImage} 
+            updateImgData={updateImageData} 
+            /> : null}
         {/*  */}
 
         {/* Conditionally showing loading while data is fetching */}
         {loading ? (
-        <div>
+        <div className={styles.loaderContainer}>
             <Spinner radius={120} color={"#333"} stroke={2} visible={true} />
         </div>
         ) : (
@@ -130,7 +188,7 @@ function ImagesList(props){
             {images.map((image) => (
                 <>
                 {/* Passing to image component each image for render */}
-                <Image key={image.id} title={image.title} url={image.imageUrl} />
+                <Image key={image.id} id={image.id} title={image.title} url={image.imageUrl} handleDeleteIcon={handleDeleteIcon} handleEditIcon={handleEditIcon}/>
                 </>
             ))}
         </main>
