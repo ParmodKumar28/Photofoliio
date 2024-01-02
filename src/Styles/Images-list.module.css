@@ -8,9 +8,10 @@ header{
     margin: 2rem 0 2rem 0;
     display: flex;
     justify-content: space-between;
+    align-items: baseline;
 }
 
-main{
+.imagesMain{
     display: flex;
     flex-wrap: wrap;
     justify-content:space-between;
@@ -31,6 +32,33 @@ main{
     padding: 0;
     height: 100%;
     width: 100%;
+}
+
+
+.searchIcon{
+    height: 35px;
+    width: 35px;
+}
+
+.searchContainer {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    width: 250px;
+    justify-content: space-between;
+}
+.searchContainer .searchInput{
+    padding: 1rem;
+    border: 2px solid black;
+    width: 100%;
+    height: 25px;
+    border-radius: 0;
+    outline: auto;
+}
+
+.searchContainer .closeSearch{
+    height: 35px;
+    width: 35px;
 }
 
 .addImageBtn{

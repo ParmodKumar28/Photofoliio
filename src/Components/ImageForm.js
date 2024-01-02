@@ -1,5 +1,5 @@
 // Imports
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styles from "../Styles/Image-form.module.css"
 import { collection, doc, getDoc, getDocs, setDoc } from "firebase/firestore";
 import db from "../firebaseConfig";

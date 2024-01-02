@@ -12,7 +12,6 @@ import ImagesList from "./ImagesList";
 function AlbumList(){
     // States
     const[imagesVisible, setImagesVisible] = useState(false);
-    const [albumImages, setAlbumImages] = useState([]);
     const [albumName, setAlbumName] = useState("");
     const [albumId, setAlbumId] = useState("");
     const[albumFormVisible, setAlbumFormVisible] = useState(false);
@@ -21,9 +20,8 @@ function AlbumList(){
 
     // Using effect on mounting to vet all albums from database.
     useEffect(() => {
-
         async function fetchData(){
-            const unsub = onSnapshot(collection(db, "albums"), (snapShot) => {
+            const unSubscribe = onSnapshot(collection(db, "albums"), (snapShot) => {
                     const albums = snapShot.docs.map((doc) => ({
                         id: doc.id,
                         ...doc.data()
@@ -35,6 +33,8 @@ function AlbumList(){
                         setLoading(false);
                     }
             });
+
+            return () => unSubscribe();
         }
         fetchData();
     }, []);
@@ -49,22 +49,17 @@ function AlbumList(){
         setAlbumFormVisible(false);
     }
 
-    // Handle click on album to open images in album
     const handleOpenImages = async (id, name) => {
         setImagesVisible(true);
         // Finding images of the album.
         try {
-            const snapShot = await getDocs(collection(db, "images"));
-            const images = snapShot.find((doc) => doc.data().albumId === id);
-
-            // Setting album images
-            setAlbumImages(images);
             setAlbumName(name);
             setAlbumId(id);
         } catch (error) {
             console.log(error);
         }
     }
+    
 
     // Handle back to album button.
     const handleBackToAlbumBtn = () => {
@@ -73,7 +68,7 @@ function AlbumList(){
 
     // Returning JSX
     return (
-        imagesVisible ? <ImagesList images={albumImages} albumId={albumId} albumName={albumName} handleBackToAlbumBtn={handleBackToAlbumBtn}/> :
+        imagesVisible ? <ImagesList albumId={albumId} albumName={albumName} handleBackToAlbumBtn={handleBackToAlbumBtn}/> :
             <div className={styles.albumsContainer}>
             {albumFormVisible ? <AlbumForm/> : null}
             <header>
