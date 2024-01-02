@@ -9,7 +9,7 @@ function Album(props){
         <div className={styles.albumContainer} onClick={() => props.handleOpenImages(props.albumId, props.name)}>
             {/* Album image */}
             <div className={styles.imgContainer}>
-            <img src="https://cdn-icons-png.flaticon.com/128/3342/3342137.png" alt="album" className={styles.albumImg}/>
+            <img src="https://cdn-icons-png.flaticon.com/128/1339/1339298.png" alt="album" className={styles.albumImg}/>
             </div>
             {/* Album name */}
             <p>{props.name}</p>

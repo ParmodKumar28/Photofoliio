@@ -7,7 +7,7 @@ function Image(props){
     // Returning JSX
     return (
         // Image container which includes image title and photo
-        <div className={styles.imageContainer}>
+        <div className={styles.imageContainer} onClick={() => props.handleShowCarousel(props.id)}>
             {/* Image and setting url from props*/}
             <img src={props.url} alt={props.title} className={styles.image}/>
             {/* Delete and edit buttons container shown on hover on image container */}

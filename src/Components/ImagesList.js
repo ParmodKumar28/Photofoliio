@@ -7,6 +7,7 @@ import { collection, deleteDoc, doc, getDocs, onSnapshot } from "firebase/firest
 import db from "../firebaseConfig";
 import Spinner from "react-spinner-material";
 import { toast } from "react-toastify";
+import Carousel from "./Carousel";
 
 // Creating component for the ImagesList here.
 function ImagesList(props){
@@ -18,6 +19,8 @@ function ImagesList(props){
     let [searchQuery, setSearchQuery] = useState("");
     let [updateImage, setUpdateImage] = useState(false);
     let [updateImageData, setUpdateImageData] = useState({});
+    let [showCarousel, setShowCarousel] = useState(false);
+    let [carouselImageIndex, setCarouselImageIndex] = useState("");
     const searchInputRef = useRef(null);
 
     // Using side effect to render all images on album load and render searched images.
@@ -121,6 +124,19 @@ function ImagesList(props){
             toast.error("Failed to remove image");
         }
     };
+
+    // Setting state to show image carousel.
+    const handleShowCarousel = (id) => {
+        setShowCarousel(true);
+        // Finding image Index on which clicked here
+        const imageIndex = images.findIndex((image) => image.id === id);
+        setCarouselImageIndex(imageIndex)
+    }
+
+    // Closing carousel
+    const handleCloseCarousel = () => {
+        setShowCarousel(false);
+    }
     
     // Returning JSX
     return (
@@ -203,8 +219,14 @@ function ImagesList(props){
                     url={image.imageUrl} 
                     handleDeleteIcon={handleDeleteIcon} 
                     handleEditIcon={handleEditIcon}
+                    handleShowCarousel={handleShowCarousel}
                     />
             ))}
+
+            {/* Conditonally render the image carousel to show images */}
+            {showCarousel && (
+                <Carousel images={images} handleCloseCarousel={handleCloseCarousel} imageIndex={carouselImageIndex}/>
+            )}
         </main>
     )}
     </div>
