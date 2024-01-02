@@ -6,11 +6,11 @@ PhotoFolio is an online photo album React app that enables users to manage and s
 [View Live Demo]()
 
 ## Features
-#### AlbumsList: Display a list of albums fetched from Firestore.
-#### AlbumForm: Add a new album to the database.
-#### ImagesList: Display images in a selected album, manage images (edit/delete).
-#### ImageForm: Add/update images in an album.
-#### Carousel: View images in a model window with navigation buttons.
+- AlbumsList: Display a list of albums fetched from Firestore.
+- AlbumForm: Add a new album to the database.
+- ImagesList: Display images in a selected album, manage images (edit/delete).
+- ImageForm: Add/update images in an album.
+- Carousel: View images in a model window with navigation buttons.
 
 ## Firestore Database Structure
 #### collections:
