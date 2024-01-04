@@ -105,7 +105,6 @@ header{
     .imagesMain{
         flex-direction: column;
         align-items: center;
-        /* justify-content: space-around; */
     }
     
     .backImageContainer{
@@ -116,13 +115,9 @@ header{
     }
 
     .searchContainer {
-        flex-direction: column-reverse;
+        flex-direction: column;
         justify-content: space-around;
         width: 250px;
-    }
-
-    .searchInput{
-        padding: 1rem;
     }
 
     .searchIcon{
