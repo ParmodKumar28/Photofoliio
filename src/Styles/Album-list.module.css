@@ -45,3 +45,10 @@ main{
     border-radius: 6px;
     background-color: hsl(0, 100%, 50%, 0.1);
 }
+
+/* Responsive */
+@media screen and (max-width: 1080px){
+    .albumsContainer{
+        width: 80%;
+    }
+}

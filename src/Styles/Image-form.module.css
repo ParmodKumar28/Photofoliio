@@ -62,3 +62,10 @@ input:focus{
     border: none;
     border-radius: 10px;
 }
+
+/* Responsive */
+@media screen and (max-width: 1080px){
+    .imageFormContainer{
+        width: 100%;
+    }
+}

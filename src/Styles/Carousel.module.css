@@ -80,3 +80,39 @@
 .closeIcon:hover {
     color: red; /* Darker semi-transparent white */
 }
+
+/* Responsive */
+@media screen and (max-width: 1080px){
+    .carouselContainer {
+        padding: 10px; 
+    }
+
+    .carouselImageContainer {
+        width: 100%; 
+        height: 100%; 
+    }
+
+    .carouselImage {
+        width: 100%;
+        height: 100%; 
+    }
+
+    .carouselImage img {
+        border-radius: 0; 
+        box-shadow: none; 
+    }
+
+    .navigation {
+        padding: 0 6px;
+    }
+
+    .rightArrow{
+        margin: 0 10px;
+    }
+
+    .closeIcon {
+        top: 20px; 
+        right: 10px; 
+        font-size: 20px; 
+    }
+}

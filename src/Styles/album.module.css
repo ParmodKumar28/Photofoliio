@@ -32,3 +32,11 @@ p{
     margin-top: 4px;
     text-align: center;
 }
+
+/* Responsive */
+@media screen and (max-width: 1080px){
+    .albumContainer{
+        height: 150px;
+        width: 150px;
+    }
+}

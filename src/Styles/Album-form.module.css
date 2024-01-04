@@ -50,3 +50,30 @@ input:focus{
     border: none;
     border-radius: 10px;
 }
+
+/* Responsive */
+@media screen and (max-width: 1080px){
+    .albumFormContainer{
+        width: 100%;
+        padding: 1rem;
+    }
+    .albumForm{
+        flex-direction: column;
+    }
+    .albumForm input{
+        width: 100%;
+        padding: 16px;
+        border-radius: 20px;
+        font-size: 1rem;
+    }
+    .createBtn{
+        height: 35px;
+        width: 100%;
+    }
+
+    .clearBtn{
+        margin-bottom: 10px;
+        height: 35px;
+        width: 100%;
+    }
+}

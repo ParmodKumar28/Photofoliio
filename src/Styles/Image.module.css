@@ -52,3 +52,21 @@
     height: 40px; 
     cursor: pointer;
 }
+
+/* Responsive */
+@media screen and (max-width: 1080px){
+    /* Image container */
+.imageContainer {
+    position: relative;
+    margin: 1rem 0;
+    padding: 6px;
+    width: 100%;
+    height: 160px; 
+}
+
+p {
+  font-size: 16px;
+  color: gray;
+}
+
+}
